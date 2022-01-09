@@ -1,0 +1,122 @@
+import { useState } from 'react';
+import styled from 'styled-components';
+import { borderColor } from '../styles/ColorStyle';
+import copy from 'fast-copy';
+
+function NewRivalBox({ rivalData, setRivalData }){
+
+  const [ userInput, setUserInput ] = useState('');
+  const onChange = (e) => setUserInput(e.target.value);
+  const addRival = (e) => {
+    if(userInput.replace(/ /g, '') === '') return;
+    for(var i=0; i<rivalData.length; i++){
+      if(rivalData[i].brand === userInput ){
+        alert('이미 포함된 브랜드입니다');
+        return;
+      }
+    }
+    let newRivalData = copy(rivalData);
+    newRivalData = [{brand: userInput, list: [userInput]}].concat(newRivalData);
+    setRivalData(newRivalData);
+    setUserInput('');
+  };
+
+  const onKeyPress = (e) => {
+    if(e.key === 'Enter'){
+      addRival(e);
+    }
+  }
+
+  return (
+    <S.Layout>
+      <S.BrandBox>
+        <S.Input placeholder={"브랜드를 입력해주세요"} value={userInput} onChange={onChange} onKeyPress={onKeyPress} />
+        <S.Close onClick={addRival}>
+          <i class="fas fa-plus"></i>
+        </S.Close>
+      </S.BrandBox>
+    </S.Layout>
+  );
+}
+
+export default NewRivalBox;
+
+const S = {};
+
+S.Word = styled.span`
+  height: 24px;
+`;
+
+S.Body = styled.div`
+  flex-grow: 1;
+  height: 100%;
+  display: flex;
+  flex-flow: column;
+  padding: 0 40px;
+  padding-bottom: 40px;
+`;
+
+S.Layout = styled.div`
+  width: ${props => props.fill ? 100 : 33.33}%;
+  padding: 0 20px 40px 20px;
+  ${props => props.fill ? 'padding: 0 0 20px 0;' : ''}
+`;
+
+S.WordBox = styled.div`
+  border: solid ${borderColor};
+  padding: 20px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 18px;
+  ${props => props.input ? 'border-color: grey;': ''}
+`;
+
+S.WordContainer = styled.div`
+  display: flex;
+  padding-top: 40px;
+  overflow-y: auto;
+  flex-wrap: wrap;
+`;
+
+S.Close = styled.div`
+  color: grey;
+  &:hover{
+    cursor: pointer;
+    color: black;
+  }
+  height: 24px;
+  width: 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+S.Input = styled.input`
+  padding: 0;
+  margin: 0;
+  font-size: 18px;
+  font-family: 'Hahmlet';
+  border: none;
+  background: none;
+  height: 24px;
+  &:focus{
+    outline: none;
+  }
+`;
+
+S.Brand = styled.div`
+  font-weight: bold;
+  font-size: 18px;
+  width: 100%;
+  padding-bottom: 40px;
+`;
+
+S.BrandBox = styled.div`
+  padding: 20px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 18px;
+  font-weight: bold;
+`;
